@@ -1,0 +1,43 @@
+esphome:
+  name: led01
+
+esp8266:
+  board: esp01
+
+logger:
+  on_message:
+    level: WARN
+    then:
+      - mqtt.publish:
+          topic: logs
+          payload: !lambda |-
+            return "Triggered on_message with level " + to_string(level) + ", tag " + tag + " and message " + message;
+
+mqtt:
+  broker: BROKER_IP_PLACEHOLDER
+  port: BROKER_PORT_PLACEHOLDER
+  birth_message:
+    topic: info/led_bed/state
+    payload: online
+  will_message:
+    topic: info/led_bed/state
+    payload: offline
+
+
+
+ota:
+  password: "#"
+
+wifi:
+  ssid: "SSID_VALUE_PLACEHOLDER"
+  password: "SSID_PASSWORD_VALUE_PLACEHOLDER"
+  fast_connect: "on"
+  power_save_mode: "NONE"
+
+light:
+  - platform: neopixelbus
+    type: RGBW
+    variant: SK6812
+    pin: GPIO2
+    num_leds: 85
+    name: "led_bed"
